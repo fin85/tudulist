@@ -1,4 +1,4 @@
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbzH2z96CgX1m4SQo8tD6nLPMo78mwvEd_JypngRnvPEslNunI52mJgZRlxl8AUmbZ1e/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwDAd_N0HARuy_qNOlJiDcS8IPQPDXUP4vx5vNlbKx299_-ArfLsgvFueQ_w_KSeFuJ/exec';
 
 module.exports = async function handler(req, res) {
   try {
