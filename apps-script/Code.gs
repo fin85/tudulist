@@ -13,6 +13,7 @@ function doPost(e) {
   try {
     const body = JSON.parse((e.postData && e.postData.contents) || '{}');
     if (body.action === 'complete') { setCompleted_(body.id, !!body.completed); return json_({ok:true}); }
+    if (body.action === 'status') { setStatus_(body.id, body.status); return json_({ok:true}); }
     return json_({ok:false,error:'Unknown action'});
   } catch (err) { return json_({ok:false,error:String(err)}); }
 }
@@ -26,6 +27,14 @@ function setCompleted_(id, completed){
   const sh = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(SHEET_NAME);
   const values = sh.getRange(2,1,Math.max(sh.getLastRow()-1,1),7).getDisplayValues();
   for(let i=0;i<values.length;i++) if(values[i][0]===id){const row=i+2;sh.getRange(row,5).setValue(completed?'Выполнена':'Не выполнена');sh.getRange(row,7).setValue(completed?Utilities.formatDate(new Date(),TZ,'dd.MM.yyyy HH:mm'):'');return;}
+  throw new Error('Task not found: '+id);
+}
+function setStatus_(id, status){
+  const allowed = ['Не выполнена','На потом'];
+  if(!allowed.includes(status)) throw new Error('Unsupported status: '+status);
+  const sh = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(SHEET_NAME);
+  const values = sh.getRange(2,1,Math.max(sh.getLastRow()-1,1),7).getDisplayValues();
+  for(let i=0;i<values.length;i++) if(values[i][0]===id){const row=i+2;sh.getRange(row,5).setValue(status);sh.getRange(row,7).setValue('');return;}
   throw new Error('Task not found: '+id);
 }
 function parseYerevanDate_(s){
